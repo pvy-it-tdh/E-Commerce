@@ -1,6 +1,7 @@
 import { GrSearch } from "react-icons/gr";
 import { FaCircleUser } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
+//
 const Header = () => {
   return (
     <header className="h-16 shadow-md">
