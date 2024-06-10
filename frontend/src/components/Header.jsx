@@ -1,12 +1,15 @@
 import { GrSearch } from "react-icons/gr";
 import { FaCircleUser } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
-//
+import { Link } from "react-router-dom";
+
 const Header = () => {
   return (
     <header className="h-16 shadow-md">
       <div className="h-full container mx-auto flex items-center px-4 justify-between">
-        <div>Logo</div>
+        <div>
+          <Link to="/">Logo</Link>
+        </div>
         <div className="hidden lg:flex items-center w-full justify-between max-w-sm border rounded-full focus-within:shadow-md pl-2">
           <input
             type="text"
@@ -30,11 +33,13 @@ const Header = () => {
               <p className="text-sm">0</p>
             </div>
           </div>
-
           <div>
-            <button className="px-3 py-1 rounded-full bg-red-600 text-white hover:bg-red-700">
+            <Link
+              to={"/login"}
+              className="px-3 py-1 rounded-full bg-red-600 text-white hover:bg-red-700"
+            >
               Login
-            </button>
+            </Link>
           </div>
         </div>
       </div>
