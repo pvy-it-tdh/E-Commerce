@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <header className="h-16 shadow-md">
+    <header className="h-16 shadow-md bg-slate-950">
       <div className="h-full container mx-auto flex items-center px-4 justify-between">
-        <div>
+        <div className="text-white">
           <Link to="/">Logo</Link>
         </div>
         <div className="hidden lg:flex items-center w-full justify-between max-w-sm border rounded-full focus-within:shadow-md pl-2">
@@ -21,12 +21,12 @@ const Header = () => {
           </div>
         </div>
         <div className="flex items-center gap-7">
-          <div className="text-3xl cursor-pointer">
+          <div className="text-3xl cursor-pointer text-white">
             <FaCircleUser />
           </div>
 
           <div className="text-2xl relative">
-            <span>
+            <span className="text-white">
               <FaShoppingCart />
             </span>
             <div className="bg-red-600 text-white w- p-1 rounded-full flex items-center justify-center absolute -top-2 -right-3">
