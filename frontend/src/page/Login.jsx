@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import loginIcon from "../assest/signin.gif";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <section id="login">
       <div className="mx-auto container px-7">
@@ -22,16 +26,30 @@ const Login = () => {
             </div>
             <div>
               <label>Password : </label>
-              <div className="bg-slate-200 p-2">
+              <div className="bg-slate-200 p-2 flex">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   className="h-full w-full outline-none bg-transparent"
                 />
+                <div
+                  className="cursor-pointer text-xl"
+                  onClick={() => setShowPassword((preve) => !preve)}
+                >
+                  <span>{showPassword ? <FaEyeSlash /> : <FaEye />}</span>
+                </div>
               </div>
+              <Link
+                to={"/forgot-password"}
+                className="block w-fit ml-auto hover:underline hover:text-red-600"
+              >
+                Forgot password
+              </Link>
             </div>
 
-            <button>Login</button>
+            <button className="bg-red-600 text-white px-6 py-2 w-full max-w-[150px] rounded-full hover:scale-105 transition-all mx-auto block mt-6">
+              Login
+            </button>
           </form>
         </div>
       </div>
