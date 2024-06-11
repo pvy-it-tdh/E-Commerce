@@ -25,7 +25,7 @@ const Login = () => {
     <section id="login">
       <div className="mx-auto container px-7">
         <div className="bg-white p-4 w-full max-w-sm mx-auto">
-          <div className="w-20 h-20 mx-auto">
+          <div className="w-20 h-20 mx-auto rounded-full overflow-hidden">
             <img src={loginIcon} alt="logoin icon" />
           </div>
 
