@@ -1,4 +1,5 @@
 const userModel = require("../model/User");
+const bcryptjs = require("bcryptjs");
 
 async function SignUpController(req, res) {
   try {
@@ -12,7 +13,23 @@ async function SignUpController(req, res) {
     if (!name) {
       throw new Error("Please provide name");
     }
-    const userData = new userModel(req.body);
+    const salt = bcryptjs.genSaltSync(10);
+    const hashPassword = bcryptjs.hashSync(password, salt);
+    if (!hashPassword) {
+      throw new Error("Something is wrong");
+    }
+    const payLoad = {
+      ...req.body,
+      password: hashPassword,
+    };
+    const userData = new userModel(rpayLoad);
+    const saveUser = userData.save();
+    res.status(201).json({
+      data: saveUser,
+      success: true,
+      error: false,
+      message: "User create success",
+    });
   } catch (err) {
     res.json({
       message: err,
@@ -21,3 +38,4 @@ async function SignUpController(req, res) {
     });
   }
 }
+module.exports = SignUpController;
