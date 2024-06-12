@@ -4,6 +4,11 @@ const bcryptjs = require("bcryptjs");
 async function SignUpController(req, res) {
   try {
     const { email, password, name } = req.body;
+    const user = await userModel.findOne({ email });
+    console.log(req.body);
+    if (user) {
+      throw new Error("Already user exits.");
+    }
     if (!email) {
       throw new Error("Please provide email");
     }
@@ -22,7 +27,7 @@ async function SignUpController(req, res) {
       ...req.body,
       password: hashPassword,
     };
-    const userData = new userModel(rpayLoad);
+    const userData = new userModel(payLoad);
     const saveUser = userData.save();
     res.status(201).json({
       data: saveUser,
@@ -32,7 +37,7 @@ async function SignUpController(req, res) {
     });
   } catch (err) {
     res.json({
-      message: err,
+      message: err.message || err,
       error: true,
       success: false,
     });

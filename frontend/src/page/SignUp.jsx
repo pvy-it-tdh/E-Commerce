@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import loginIcon from "../assest/signin.gif";
+import loginIcons from "../assest/signin.gif";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import imageTobase64 from "../helper/ImageTobase64";
+import SummaryApi from "../common";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,50 +13,80 @@ const SignUp = () => {
     email: "",
     password: "",
     name: "",
-    confirmpassword: "",
+    confirmPassword: "",
     profilePic: "",
   });
+  const navigate = useNavigate();
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
-    setData((preve) => {
-      return {
-        ...preve,
-        [name]: value,
-      };
-    });
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleUploadPic = async (e) => {
-    const file = e.target.files[0]; // Corrected to 'files'
+    const file = e.target.files[0];
     if (file) {
       const imagePic = await imageTobase64(file);
-      setData((preve) => {
-        return {
-          ...preve,
-          profilePic: imagePic,
-        };
-      });
-    } else {
-      console.error("No file selected");
+      setData((prev) => ({
+        ...prev,
+        profilePic: imagePic,
+      }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (data.password !== data.confirmPassword) {
+      toast.error("Please check password and confirm password");
+      return;
+    }
+
+    if (
+      !SummaryApi.signUP ||
+      !SummaryApi.signUP.url ||
+      !SummaryApi.signUP.method
+    ) {
+      toast.error("API configuration error: URL or method is missing.");
+      return;
+    }
+
+    try {
+      const dataResponse = await fetch(SummaryApi.signUP.url, {
+        method: SummaryApi.signUP.method,
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const dataApi = await dataResponse.json();
+
+      if (dataApi.success) {
+        toast.success(dataApi.message);
+        navigate("/login");
+      } else if (dataApi.error) {
+        toast.error(dataApi.message);
+      }
+    } catch (error) {
+      toast.error("Failed to sign up. Please try again.");
+    }
   };
 
   return (
     <section id="signup">
-      <div className="mx-auto container px-7">
-        <div className="bg-white p-4 w-full max-w-sm mx-auto">
+      <div className="mx-auto container p-4">
+        <div className="bg-white p-5 w-full max-w-sm mx-auto">
           <div className="w-20 h-20 mx-auto relative overflow-hidden rounded-full">
             <div>
-              <img src={data.profilePic || loginIcon} alt="logoin icon" />
+              <img src={data.profilePic || loginIcons} alt="login icons" />
             </div>
-            <form action="">
+            <form>
               <label>
-                <div className="text-xs bg-opacity-50 bg-slate-200 py-4 text-center absolute w-full bottom-0">
+                <div className="text-xs bg-opacity-80 bg-slate-200 pb-4 pt-2 cursor-pointer text-center absolute bottom-0 w-full">
                   Upload Photo
                 </div>
                 <input
@@ -68,68 +100,71 @@ const SignUp = () => {
 
           <form className="pt-6 flex flex-col gap-2" onSubmit={handleSubmit}>
             <div className="grid">
-              <label>Name: </label>
-              <div className="bg-slate-200 p-2">
+              <label>Name : </label>
+              <div className="bg-slate-100 p-2">
                 <input
                   type="text"
+                  placeholder="enter your name"
                   name="name"
                   value={data.name}
-                  placeholder="Enter your name"
                   onChange={handleOnChange}
                   required
-                  className="h-full w-full outline-none bg-transparent"
+                  className="w-full h-full outline-none bg-transparent"
                 />
               </div>
             </div>
             <div className="grid">
-              <label>Email: </label>
-              <div className="bg-slate-200 p-2">
+              <label>Email : </label>
+              <div className="bg-slate-100 p-2">
                 <input
-                  required
                   type="email"
+                  placeholder="enter email"
                   name="email"
                   value={data.email}
-                  placeholder="Enter email"
                   onChange={handleOnChange}
-                  className="h-full w-full outline-none bg-transparent"
+                  required
+                  className="w-full h-full outline-none bg-transparent"
                 />
               </div>
             </div>
+
             <div>
               <label>Password : </label>
-              <div className="bg-slate-200 p-2 flex">
+              <div className="bg-slate-100 p-2 flex">
                 <input
                   type={showPassword ? "text" : "password"}
-                  onChange={handleOnChange}
+                  placeholder="enter password"
                   value={data.password}
                   name="password"
-                  placeholder="Enter password"
-                  className="h-full w-full outline-none bg-transparent"
+                  onChange={handleOnChange}
                   required
+                  className="w-full h-full outline-none bg-transparent"
                 />
                 <div
                   className="cursor-pointer text-xl"
-                  onClick={() => setShowPassword((preve) => !preve)}
+                  onClick={() => setShowPassword((prev) => !prev)}
                 >
                   <span>{showPassword ? <FaEyeSlash /> : <FaEye />}</span>
                 </div>
               </div>
             </div>
+
             <div>
               <label>Confirm Password : </label>
-              <div className="bg-slate-200 p-2 flex">
+              <div className="bg-slate-100 p-2 flex">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
+                  placeholder="enter confirm password"
+                  value={data.confirmPassword}
+                  name="confirmPassword"
                   onChange={handleOnChange}
                   required
-                  value={data.confirmpassword}
-                  name="confirmpassword"
-                  placeholder="Enter Confirm Password"
-                  className="h-full w-full outline-none bg-transparent"
+                  className="w-full h-full outline-none bg-transparent"
                 />
+
                 <div
                   className="cursor-pointer text-xl"
-                  onClick={() => setShowConfirmPassword((preve) => !preve)}
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
                 >
                   <span>
                     {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
@@ -138,15 +173,16 @@ const SignUp = () => {
               </div>
             </div>
 
-            <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 w-full max-w-[150px] rounded-full hover:scale-105 transition-all mx-auto block mt-6">
+            <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 w-full max-w-[150px] rounded-full hover:scale-110 transition-all mx-auto block mt-6">
               Sign Up
             </button>
           </form>
+
           <p className="my-5">
             Already have account?{" "}
             <Link
               to={"/login"}
-              className="text-red-500 hover:text-red-700 hover:underline"
+              className=" text-red-600 hover:text-red-700 hover:underline"
             >
               Login
             </Link>
