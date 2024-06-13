@@ -28,7 +28,7 @@ async function SignUpController(req, res) {
       password: hashPassword,
     };
     const userData = new userModel(payLoad);
-    const saveUser = userData.save();
+    const saveUser = await userData.save();
     res.status(201).json({
       data: saveUser,
       success: true,
