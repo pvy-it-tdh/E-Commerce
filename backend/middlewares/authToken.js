@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 async function authToken(req, res, next) {
   try {
-    const token = req.cookies?.token || req.header;
+    const token = req.cookies?.token;
     if (!token) {
       return res.status(200).json({
         message: "User not Login",
