@@ -28,35 +28,19 @@ const SignUp = () => {
 
   const handleUploadPic = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const imagePic = await imageTobase64(file);
-      setData((prev) => ({
-        ...prev,
-        profilePic: imagePic,
-      }));
-    }
+    const imagePic = await imageTobase64(file);
+    setData((prev) => ({
+      ...prev,
+      profilePic: imagePic,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (data.password !== data.confirmPassword) {
-      toast.error("Please check password and confirm password");
-      return;
-    }
-
-    if (
-      !SummaryApi.signUP ||
-      !SummaryApi.signUP.url ||
-      !SummaryApi.signUP.method
-    ) {
-      toast.error("API configuration error: URL or method is missing.");
-      return;
-    }
-
-    try {
-      const dataResponse = await fetch(SummaryApi.signUP.url, {
-        method: SummaryApi.signUP.method,
+    if (data.password === data.confirmPassword) {
+      const dataResponse = await fetch(SummaryApi.signUp.url, {
+        method: SummaryApi.signUp.method,
         headers: {
           "content-type": "application/json",
         },
@@ -68,11 +52,13 @@ const SignUp = () => {
       if (dataApi.success) {
         toast.success(dataApi.message);
         navigate("/login");
-      } else if (dataApi.error) {
+      }
+
+      if (dataApi.error) {
         toast.error(dataApi.message);
       }
-    } catch (error) {
-      toast.error("Failed to sign up. Please try again.");
+    } else {
+      toast.error("Please check password and confirm password");
     }
   };
 
