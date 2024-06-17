@@ -3,10 +3,18 @@ import { FaCircleUser } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import SummaryApi from "../common";
 
 const Header = () => {
   const user = useSelector((state) => state?.user);
   console.log("user-header", user);
+  const handleLogout = async () => {
+    const fetchData = await fetch(SummaryApi.logout_user.url, {
+      method: SummaryApi.logout_user.method,
+      credentials: "include",
+    });
+    const data = await fetchData.json();
+  };
   return (
     <header className="h-16 shadow-md bg-slate-950">
       <div className="h-full container mx-auto flex items-center px-4 justify-between">
