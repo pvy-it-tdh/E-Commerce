@@ -14,6 +14,12 @@ const Header = () => {
       credentials: "include",
     });
     const data = await fetchData.json();
+    if (data.sucess) {
+      alert(data.message);
+    }
+    if (data.error) {
+      alert(data.message);
+    }
   };
   return (
     <header className="h-16 shadow-md bg-slate-950">
@@ -53,12 +59,21 @@ const Header = () => {
             </div>
           </div>
           <div>
-            <Link
-              to={"/login"}
-              className="px-3 py-1 rounded-full bg-red-600 text-white hover:bg-red-700"
-            >
-              Login
-            </Link>
+            {user?._id ? (
+              <button
+                onClick={handleLogout}
+                className="px-3 py-1 rounded-full bg-red-600 text-white hover:bg-red-700"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to={"/login"}
+                className="px-3 py-1 rounded-full bg-red-600 text-white hover:bg-red-700"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>
