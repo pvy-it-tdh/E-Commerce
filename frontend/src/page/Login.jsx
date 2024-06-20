@@ -34,7 +34,7 @@ const Login = () => {
     });
     const dataAPI = await dataResponse.json();
     if (dataAPI.success) {
-      alert(data.message);
+      alert("login success");
       navigate("/");
       fetchUserDetails();
     }

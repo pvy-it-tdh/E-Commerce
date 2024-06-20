@@ -2,25 +2,32 @@ import { GrSearch } from "react-icons/gr";
 import { FaCircleUser } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SummaryApi from "../common";
+import { setUserDetails } from "../stores/userSlide";
 
 const Header = () => {
-  const user = useSelector((state) => state?.user);
-  console.log("user-header", user);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   const handleLogout = async () => {
-    const fetchData = await fetch(SummaryApi.logout_user.url, {
-      method: SummaryApi.logout_user.method,
-      credentials: "include",
-    });
-    const data = await fetchData.json();
-    if (data.sucess) {
-      alert(data.message);
-    }
-    if (data.error) {
-      alert(data.message);
+    try {
+      const response = await fetch(SummaryApi.logout_user.url, {
+        method: SummaryApi.logout_user.method,
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert(data.message);
+        dispatch(setUserDetails(null));
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
     }
   };
+
   return (
     <header className="h-16 shadow-md bg-slate-950">
       <div className="h-full container mx-auto flex items-center px-4 justify-between">
@@ -54,7 +61,7 @@ const Header = () => {
             <span className="text-white">
               <FaShoppingCart />
             </span>
-            <div className="bg-red-600 text-white w- p-1 rounded-full flex items-center justify-center absolute -top-2 -right-3">
+            <div className="bg-red-600 text-white w-6 h-6 p-1 rounded-full flex items-center justify-center absolute -top-2 -right-3">
               <p className="text-sm">0</p>
             </div>
           </div>
@@ -68,7 +75,7 @@ const Header = () => {
               </button>
             ) : (
               <Link
-                to={"/login"}
+                to="/login"
                 className="px-3 py-1 rounded-full bg-red-600 text-white hover:bg-red-700"
               >
                 Login
